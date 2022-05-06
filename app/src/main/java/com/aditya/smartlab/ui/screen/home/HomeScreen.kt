@@ -23,12 +23,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aditya.smartlab.data.models.Device
 import com.aditya.smartlab.ui.theme.DarkGray
+import com.aditya.smartlab.util.getTimeDifference
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    navigateTo: (Int) -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +53,10 @@ fun HomeScreen(
                 RoomCard(
                     name = "306-A",
                     devices = viewModel.devicesA.value,
-                    navigateTo = { }
+                    navigateTo = { navigateTo(it) },
+                    onDeviceStatusChange = { id, status ->
+                        viewModel.updateDevice(id,status)
+                    }
                 )
             }
             item {
@@ -62,7 +66,10 @@ fun HomeScreen(
                 RoomCard(
                     name = "306-B",
                     devices = viewModel.devicesB.value,
-                    navigateTo = { }
+                    navigateTo = { navigateTo(it) },
+                    onDeviceStatusChange = { id, status ->
+                        viewModel.updateDevice(id,status)
+                    }
                 )
             }
         }
@@ -75,7 +82,8 @@ fun HomeScreen(
 private fun RoomCard(
     name: String,
     devices: List<Device>,
-    navigateTo: () -> Unit,
+    navigateTo: (Int) -> Unit,
+    onDeviceStatusChange: (Int, Int) -> Unit
 ) {
     val state = remember { mutableStateOf(-1) }
 
@@ -125,21 +133,30 @@ private fun RoomCard(
         if (state.value == 0) {
             DevicesRegion(
                 devices = devices.subList(0, 6),
-                onClick = { }
+                onClick = { navigateTo(it) },
+                onDeviceStatusChange = { id, status ->
+                    onDeviceStatusChange(id,status)
+                }
             )
         }
 
         if (state.value == 1) {
             DevicesRegion(
                 devices = devices.subList(6, 12),
-                onClick = { }
+                onClick = { navigateTo(it) },
+                onDeviceStatusChange = { id, status ->
+                    onDeviceStatusChange(id,status)
+                }
             )
         }
 
         if (state.value == 2) {
             DevicesRegion(
                 devices = devices.subList(12, 14),
-                onClick = { }
+                onClick = { navigateTo(it) },
+                onDeviceStatusChange = { id, status ->
+                    onDeviceStatusChange(id,status)
+                }
             )
         }
 
@@ -196,7 +213,8 @@ private fun DeviceRoundButton(
 @Composable
 private fun DevicesRegion(
     devices: List<Device>,
-    onClick: () -> Unit
+    onClick: (Int) -> Unit,
+    onDeviceStatusChange: (Int, Int) -> Unit
 ) {
 
     devices.chunked(2).forEach {
@@ -208,7 +226,10 @@ private fun DevicesRegion(
             it.forEach { device ->
                 DeviceCard(
                     device = device,
-                    onClick = { onClick() }
+                    onClick = { onClick(device.id) },
+                    onDeviceStatusChange = { id, status ->
+                        onDeviceStatusChange(id,status)
+                    }
                 )
             }
         }
@@ -219,9 +240,8 @@ private fun DevicesRegion(
 private fun DeviceCard(
     device: Device,
     onClick: () -> Unit,
+    onDeviceStatusChange: (Int, Int) -> Unit
 ) {
-    val checked = remember { mutableStateOf(false) }
-
     Row(
         modifier = Modifier
             .width(150.dp)
@@ -234,12 +254,21 @@ private fun DeviceCard(
     ) {
         Column {
             Text(device.name)
-            Text(
-                text = "On for last 5 Hrs",
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
+            if (device.status != 0) {
+                Text(
+                    text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime),
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+            }
         }
-        Switch(checked.value, onCheckedChange = { checked.value = !checked.value })
+        Switch(
+            checked = device.status != 0,
+            onCheckedChange = {
+                onDeviceStatusChange(
+                    device.id, if (device.status == 0) 100 else 0
+                )
+            }
+        )
     }
 }

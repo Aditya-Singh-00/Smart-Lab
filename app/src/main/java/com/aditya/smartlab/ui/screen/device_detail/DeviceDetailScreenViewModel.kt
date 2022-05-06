@@ -16,29 +16,33 @@ import javax.inject.Inject
 class DeviceDetailScreenViewModel @Inject constructor(
     private val repository: SmartLabRepository,
     private val savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
-    var device: MutableState<Device?> = mutableStateOf(null)
+    var device: MutableState<Device> = mutableStateOf(Device())
+        private set
+
+    var deviceNameText = mutableStateOf("")
         private set
 
     init {
         getDevice()
+        deviceNameText.value = device.value.name
     }
 
-    fun updateDeviceName(name: String) {
-        if (name.isBlank()) return
+    fun updateDeviceNameText(text: String) {
+        deviceNameText.value = text
+    }
+
+    fun updateDeviceName() {
+        if (deviceNameText.value.isBlank()) return
         viewModelScope.launch(Dispatchers.IO) {
-            device.value?.let {
-                repository.updateDeviceName(it.id, name)
-            }
+            repository.updateDeviceName(device.value.id, deviceNameText.value)
         }
     }
 
     fun updateDeviceStatus(status: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            device.value?.let {
-                repository.updateDeviceStatus(it.id, status)
-            }
+            repository.updateDeviceStatus(device.value.id, status)
         }
     }
 

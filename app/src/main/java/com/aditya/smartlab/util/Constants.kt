@@ -4,4 +4,4 @@ const val DATABASE_URL = "https://smart-home-16c6c-default-rtdb.asia-southeast1.
 const val LAB = "lab"
 const val NAME = "name"
 const val STATUS = "status"
-const val TYPE = "type"
+const val LAST_ON_TIME = "lastOnTime"
