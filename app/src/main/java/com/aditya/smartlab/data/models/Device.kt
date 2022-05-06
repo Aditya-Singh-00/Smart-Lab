@@ -1,11 +1,11 @@
 package com.aditya.smartlab.data.models
 
 data class Device(
-    val id: Int,
-    val name: String,
-    val status: Int,
-    val type: DeviceType,
-    val lastOnTime: Long
+    val id: Int = 0,
+    val name: String = "",
+    val status: Int = 0,
+    val type: DeviceType = DeviceType.FAN,
+    val lastOnTime: Long = System.currentTimeMillis()
 )
 
 enum class DeviceType {
