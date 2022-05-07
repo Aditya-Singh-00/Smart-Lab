@@ -1,16 +1,16 @@
 package com.aditya.smartlab.ui.screen.home
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,11 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aditya.smartlab.R
 import com.aditya.smartlab.data.models.Device
 import com.aditya.smartlab.ui.theme.DarkGray
+import com.aditya.smartlab.ui.theme.Green
 import com.aditya.smartlab.util.getTimeDifference
 
 @Composable
@@ -33,8 +37,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkGray)
-            .padding(8.dp),
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
@@ -77,7 +80,6 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun RoomCard(
     name: String,
@@ -111,6 +113,11 @@ private fun RoomCard(
             modifier = Modifier.padding(12.dp)
         )
         val deviceTypes = listOf("Fans", "Lights", "ACs")
+        val iconList = listOf(
+            painterResource(R.drawable.ic_ceiling_fan),
+            painterResource(R.drawable.ic_light),
+            painterResource(R.drawable.ic_ac)
+        )
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -119,6 +126,7 @@ private fun RoomCard(
             deviceTypes.forEachIndexed { index, type ->
                 DeviceRoundButton(
                     label = type,
+                    icon = iconList[index],
                     onClick = {
                         if (index == state.value) {
                             state.value = -1
@@ -167,6 +175,7 @@ private fun RoomCard(
 @Composable
 private fun DeviceRoundButton(
     label: String,
+    icon: Painter,
     onClick: () -> Unit,
     selected: Boolean
 ) {
@@ -178,8 +187,8 @@ private fun DeviceRoundButton(
             onClick = { onClick() },
             content = {
                 Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = null
+                    painter = icon,
+                    contentDescription = label
                 )
             },
             modifier = Modifier
@@ -188,6 +197,7 @@ private fun DeviceRoundButton(
                     shape = RoundedCornerShape(50),
                 )
                 .size(60.dp)
+                .padding(8.dp)
         )
         Text(
             text = label,
@@ -217,20 +227,22 @@ private fun DevicesRegion(
     onDeviceStatusChange: (Int, Int) -> Unit
 ) {
 
-    devices.chunked(2).forEach {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            it.forEach { device ->
-                DeviceCard(
-                    device = device,
-                    onClick = { onClick(device.id) },
-                    onDeviceStatusChange = { id, status ->
-                        onDeviceStatusChange(id,status)
-                    }
-                )
+    if (devices.isNotEmpty()) {
+        devices.chunked(2).forEach {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                it.forEach { device ->
+                    DeviceCard(
+                        device = device,
+                        onClick = { onClick(device.id) },
+                        onDeviceStatusChange = { id, status ->
+                            onDeviceStatusChange(id, status)
+                        }
+                    )
+                }
             }
         }
     }
@@ -242,33 +254,43 @@ private fun DeviceCard(
     onClick: () -> Unit,
     onDeviceStatusChange: (Int, Int) -> Unit
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .width(150.dp)
             .height(100.dp)
             .padding(8.dp)
             .background(Color.Yellow, RoundedCornerShape(10.dp))
             .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(device.name)
-            if (device.status != 0) {
-                Text(
-                    text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime),
-                    fontSize = 16.sp,
-                    color = Color.Gray
+            Switch(
+                checked = device.status != 0,
+                onCheckedChange = {
+                    onDeviceStatusChange(
+                        device.id, if (device.status == 0) 100 else 0
+                    )
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Green,
+                    uncheckedThumbColor = DarkGray
                 )
-            }
+            )
         }
-        Switch(
-            checked = device.status != 0,
-            onCheckedChange = {
-                onDeviceStatusChange(
-                    device.id, if (device.status == 0) 100 else 0
-                )
-            }
-        )
+        if (device.status != 0) {
+            Text(
+                text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime),
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.aditya.smartlab.data.repository
 
 import com.aditya.smartlab.data.models.Device
 import com.aditya.smartlab.util.LAB
+import com.aditya.smartlab.util.LAST_ON_TIME
 import com.aditya.smartlab.util.NAME
 import com.aditya.smartlab.util.STATUS
 import com.google.firebase.database.DataSnapshot
@@ -27,6 +28,13 @@ class SmartLabRepositoryImpl(
             .child(id.toString())
             .child(STATUS)
             .setValue(status)
+
+        if (status == 100) {
+            firebaseDatabase.getReference(LAB)
+                .child(id.toString())
+                .child(LAST_ON_TIME)
+                .setValue(System.currentTimeMillis())
+        }
     }
 
     override fun getStatus(): Flow<MutableList<Device>> {
