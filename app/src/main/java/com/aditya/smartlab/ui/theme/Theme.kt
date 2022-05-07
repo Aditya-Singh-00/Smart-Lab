@@ -9,20 +9,26 @@ import androidx.compose.runtime.Composable
 
 @SuppressLint("ConflictingOnColor")
 private val DarkColorPalette = darkColors(
-    primary = Yellow,
-    primaryVariant = YellowDark,
-    secondary = Yellow,
-    background = Yellow,
-    onBackground = DarkGray
+    primary = BlueLight,
+    primaryVariant = BlueDark,
+    secondary = BlueLight,
+    secondaryVariant = BlueDark,
+    background = WhiteGray,
+    surface = White,
+    onPrimary = White,
+    onBackground = Black,
 )
 
 @SuppressLint("ConflictingOnColor")
 private val LightColorPalette = lightColors(
-    primary = Yellow,
-    primaryVariant = YellowDark,
-    secondary = Yellow,
-    background = Yellow,
-    onBackground = DarkGray
+    primary = BlueLight,
+    primaryVariant = BlueDark,
+    secondary = BlueLight,
+    secondaryVariant = BlueDark,
+    background = WhiteGray,
+    surface = White,
+    onPrimary = White,
+    onBackground = Black,
 )
 
 @Composable

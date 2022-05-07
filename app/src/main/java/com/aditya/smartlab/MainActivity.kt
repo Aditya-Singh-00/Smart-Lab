@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             SmartLabTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = DarkGray
+                    color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
                     Navigation(
