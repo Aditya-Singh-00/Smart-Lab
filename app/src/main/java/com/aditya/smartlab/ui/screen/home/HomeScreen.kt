@@ -58,7 +58,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Text(
-                            text = "Room temperature is 37\u00B0 ",
+                            text = "Room temperature is ${viewModel.roomTemperature.value.status}\u00B0C",
                             modifier = Modifier.align(Alignment.Center),
                             style = MaterialTheme.typography.h6,
                             color = White
@@ -80,7 +80,7 @@ fun HomeScreen(
                 )
             }
             item {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
             }
             item {
                 RoomCard(
@@ -290,7 +290,7 @@ private fun DeviceCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
-                .padding(8.dp),
+                .padding(16.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.Start
         ) {
@@ -300,11 +300,14 @@ private fun DeviceCard(
                 color = MaterialTheme.colors.onBackground
             )
             if (device.status != 0) {
-                Text(
-                    text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime),
-                    style = MaterialTheme.typography.caption,
-                    color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
-                )
+                val text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime)
+                if (text.isNotBlank()) {
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.caption,
+                        color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+                    )
+                }
             }
         }
         Switch(
@@ -313,7 +316,11 @@ private fun DeviceCard(
                 onDeviceStatusChange(
                     device.id, if (device.status == 0) 100 else 0
                 )
-            }
+            },
+            colors = SwitchDefaults.colors(
+                uncheckedThumbColor = MaterialTheme.colors.onBackground,
+                uncheckedTrackColor = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+            )
         )
     }
 }

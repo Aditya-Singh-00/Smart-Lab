@@ -26,7 +26,6 @@ class DeviceDetailScreenViewModel @Inject constructor(
 
     init {
         getDevice()
-        deviceNameText.value = device.value.name
     }
 
     fun updateDeviceNameText(text: String) {
@@ -52,6 +51,7 @@ class DeviceDetailScreenViewModel @Inject constructor(
             id?.let {
                 repository.getStatusById(id).collect {
                     device.value = it
+                    deviceNameText.value = it.name
                 }
             }
         }

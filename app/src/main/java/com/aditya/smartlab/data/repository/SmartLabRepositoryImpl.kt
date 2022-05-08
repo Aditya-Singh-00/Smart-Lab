@@ -27,14 +27,21 @@ class SmartLabRepositoryImpl(
         firebaseDatabase.getReference(LAB)
             .child(id.toString())
             .child(STATUS)
+            .get().addOnCompleteListener {
+                val prevStatus = it.result.value.toString().toInt()
+                if (status != 0 && prevStatus == 0) {
+                    firebaseDatabase.getReference(LAB)
+                        .child(id.toString())
+                        .child(LAST_ON_TIME)
+                        .setValue(System.currentTimeMillis())
+                }
+            }
+
+        firebaseDatabase.getReference(LAB)
+            .child(id.toString())
+            .child(STATUS)
             .setValue(status)
 
-        if (status == 100) {
-            firebaseDatabase.getReference(LAB)
-                .child(id.toString())
-                .child(LAST_ON_TIME)
-                .setValue(System.currentTimeMillis())
-        }
     }
 
     override fun getStatus(): Flow<MutableList<Device>> {

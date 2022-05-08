@@ -25,6 +25,9 @@ class HomeScreenViewModel @Inject constructor(
     var devicesB: MutableState<List<Device>> = mutableStateOf(listOf())
         private set
 
+    var roomTemperature: MutableState<Device> = mutableStateOf(Device())
+        private set
+
     init {
         getDevices()
     }
@@ -32,6 +35,14 @@ class HomeScreenViewModel @Inject constructor(
     fun updateDevice(id: Int, status: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateDeviceStatus(id, status)
+        }
+    }
+
+    private fun getRoomTemperature() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getStatusById(29).collect {
+                roomTemperature.value = it
+            }
         }
     }
 
