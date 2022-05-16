@@ -38,7 +38,7 @@ fun DeviceDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                verticalArrangement = Arrangement.SpaceEvenly
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -100,7 +100,7 @@ fun DeviceDetailScreen(
                 content = {
                     Text(
                         text = "Save Changes",
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.button
                     )
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -113,7 +113,7 @@ fun DeviceDetailScreen(
                 content = {
                     Text(
                         text = "Edit Device",
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.button
                     )
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),

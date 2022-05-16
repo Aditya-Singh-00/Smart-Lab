@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @SuppressLint("ConflictingOnColor")
 private val DarkColorPalette = darkColors(
@@ -33,6 +34,10 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun SmartLabTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(WhiteGray)
+
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {

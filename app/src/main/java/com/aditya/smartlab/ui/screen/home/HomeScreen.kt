@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aditya.smartlab.R
 import com.aditya.smartlab.data.models.Device
+import com.aditya.smartlab.ui.theme.DarkGray
 import com.aditya.smartlab.ui.theme.White
 import com.aditya.smartlab.util.getTimeDifference
 
@@ -39,7 +40,7 @@ fun HomeScreen(
         ) {
             Text(
                 text = "Smart Lab",
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.h5
             )
         }
         Spacer(Modifier.height(25.dp))
@@ -318,8 +319,8 @@ private fun DeviceCard(
                 )
             },
             colors = SwitchDefaults.colors(
-                uncheckedThumbColor = MaterialTheme.colors.onBackground,
-                uncheckedTrackColor = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+                uncheckedThumbColor = DarkGray,
+                uncheckedTrackColor = DarkGray
             )
         )
     }
