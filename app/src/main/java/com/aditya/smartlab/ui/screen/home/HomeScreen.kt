@@ -34,15 +34,6 @@ fun HomeScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(
-                text = "Smart Lab",
-                style = MaterialTheme.typography.h5
-            )
-        }
         Spacer(Modifier.height(25.dp))
         LazyColumn {
             item {
@@ -244,6 +235,7 @@ private fun DeviceRoundButton(
 
 @Composable
 private fun DevicesRegion(
+    modifier: Modifier = Modifier,
     devices: List<Device>,
     onClick: (Int) -> Unit,
     onDeviceStatusChange: (Int, Int) -> Unit
@@ -252,12 +244,13 @@ private fun DevicesRegion(
     if (devices.isNotEmpty()) {
         devices.chunked(2).forEach {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 it.forEach { device ->
                     DeviceCard(
+                        modifier = modifier.weight(1f),
                         device = device,
                         onClick = { onClick(device.id) },
                         onDeviceStatusChange = { id, status ->
@@ -272,13 +265,13 @@ private fun DevicesRegion(
 
 @Composable
 private fun DeviceCard(
+    modifier: Modifier = Modifier,
     device: Device,
     onClick: () -> Unit,
     onDeviceStatusChange: (Int, Int) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .width(150.dp)
+        modifier = modifier
             .height(100.dp)
             .padding(8.dp)
             .background(
@@ -290,8 +283,8 @@ private fun DeviceCard(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .padding(16.dp),
+                .fillMaxWidth(0.6f)
+                .padding(8.dp),
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.Start
         ) {
@@ -318,6 +311,7 @@ private fun DeviceCard(
                     device.id, if (device.status == 0) 100 else 0
                 )
             },
+            modifier = Modifier.padding(4.dp),
             colors = SwitchDefaults.colors(
                 uncheckedThumbColor = DarkGray,
                 uncheckedTrackColor = DarkGray

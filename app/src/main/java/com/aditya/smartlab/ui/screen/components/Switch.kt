@@ -1,7 +1,7 @@
 package com.aditya.smartlab.ui.screen.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun Switch(
     checked: Boolean,
     onCheckedChange: () -> Unit,
-    size: Float = 40f,
+    size: Dp = 40.dp,
     checkedThumbColor: Color = MaterialTheme.colors.secondaryVariant,
     checkedTrackColor: Color = checkedThumbColor.copy(alpha = 0.54f),
     uncheckedThumbColor: Color = MaterialTheme.colors.surface,
@@ -46,7 +46,7 @@ fun Switch(
         }
     )
 
-    val offsetX = animateFloatAsState(
+    val offsetX = animateDpAsState(
         if (checked) {
             size - height / 2.0f
         } else {
@@ -56,8 +56,8 @@ fun Switch(
 
     Canvas(
         modifier = Modifier
-            .width(size.dp)
-            .height(height.dp)
+            .width(size)
+            .height(height)
             .background(
                 color = trackColor.value,
                 shape = RoundedCornerShape(50)
@@ -66,10 +66,10 @@ fun Switch(
     ) {
         drawCircle(
             color = thumbColor.value,
-            radius = radius,
+            radius = radius.toPx(),
             center = Offset(
-                x = offsetX.value,
-                y = height / 2.0f)
+                x = offsetX.value.toPx(),
+                y = height.toPx() / 2.0f)
         )
     }
 }
