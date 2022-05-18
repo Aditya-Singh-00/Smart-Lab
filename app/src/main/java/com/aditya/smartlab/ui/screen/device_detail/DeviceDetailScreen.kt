@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aditya.smartlab.data.models.DeviceType
+import com.aditya.smartlab.ui.theme.DarkGray
 import com.aditya.smartlab.util.getTimeDifference
 
 @Composable
@@ -72,15 +73,23 @@ fun DeviceDetailScreen(
                             viewModel.updateDeviceStatus(
                                 if (device.status == 0) 100 else 0
                             )
-                        }
+                        },
+                        modifier = Modifier.padding(4.dp),
+                        colors = SwitchDefaults.colors(
+                            uncheckedThumbColor = DarkGray,
+                            uncheckedTrackColor = DarkGray
+                        )
                     )
                 }
                 if (device.status != 0) {
-                    Text(
-                        text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime),
-                        style = MaterialTheme.typography.caption,
-                        color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
-                    )
+                    val text = getTimeDifference(System.currentTimeMillis(), device.lastOnTime)
+                    if (text.isNotBlank()) {
+                        Text(
+                            text = text,
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.onBackground.copy(alpha = 0.5f)
+                        )
+                    }
                 }
             }
         }
