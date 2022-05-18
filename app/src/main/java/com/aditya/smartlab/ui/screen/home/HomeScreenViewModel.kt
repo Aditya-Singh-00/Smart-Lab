@@ -16,8 +16,7 @@ class HomeScreenViewModel @Inject constructor(
     private val repository: SmartLabRepository
 ) : ViewModel() {
 
-    var devices: MutableState<List<Device>> = mutableStateOf(listOf())
-        private set
+    private var devices: MutableState<List<Device>> = mutableStateOf(listOf())
 
     var devicesA: MutableState<List<Device>> = mutableStateOf(listOf())
         private set
@@ -30,6 +29,7 @@ class HomeScreenViewModel @Inject constructor(
 
     init {
         getDevices()
+        getRoomTemperature()
     }
 
     fun updateDevice(id: Int, status: Int) {
@@ -40,9 +40,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun getRoomTemperature() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getStatusById(29).collect {
-                roomTemperature.value = it
-            }
+            repository.getStatusById(29).collect { roomTemperature.value = it }
         }
     }
 
