@@ -28,6 +28,8 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     navigateTo: (Int) -> Unit
 ) {
+
+    val roomTemperature = viewModel.roomTemperature.value
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,25 +38,27 @@ fun HomeScreen(
     ) {
         Spacer(Modifier.height(25.dp))
         LazyColumn {
-            item {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .padding(8.dp),
-                    shape = MaterialTheme.shapes.large,
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
-                    elevation = 5.dp
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
+            roomTemperature?.let {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .padding(8.dp),
+                        shape = MaterialTheme.shapes.large,
+                        backgroundColor = MaterialTheme.colors.primaryVariant,
+                        elevation = 5.dp
                     ) {
-                        Text(
-                            text = "Room temperature is ${viewModel.roomTemperature.value.status}\u00B0C",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.h6,
-                            color = White
-                        )
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Text(
+                                text = "Room temperature is $roomTemperature \u00B0C",
+                                modifier = Modifier.align(Alignment.Center),
+                                style = MaterialTheme.typography.h6,
+                                color = White
+                            )
+                        }
                     }
                 }
             }

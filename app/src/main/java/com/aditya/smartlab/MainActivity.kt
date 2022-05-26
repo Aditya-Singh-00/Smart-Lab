@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.aditya.smartlab.ui.navigation.Navigation
-import com.aditya.smartlab.ui.theme.DarkGray
 import com.aditya.smartlab.ui.theme.SmartLabTheme
 import com.aditya.smartlab.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,10 +26,20 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    Navigation(
-                        navController = navController,
-                        startDestination = Screen.HomeScreen.route
-                    )
+                    val mainViewModel: MainViewModel = hiltViewModel()
+                    mainViewModel.userLoggedIn.value?.let { loggedIn ->
+                        if (loggedIn) {
+                            Navigation(
+                                navController = navController,
+                                startDestination = Screen.HomeScreen.route
+                            )
+                        } else {
+                            Navigation(
+                                navController = navController,
+                                startDestination = Screen.LoginScreen.route
+                            )
+                        }
+                    }
                 }
             }
         }
